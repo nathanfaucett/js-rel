@@ -10,16 +10,16 @@ function project(rows, attributes) {
     return isArray(attributes) ?
         map(rows, function mapSelect(row) {
             var out = {},
-                i = 0,
-                il = attributes.length,
+                i = -1,
+                il = attributes.length - 1,
                 key;
 
-            while (il--) {
+            while (i++ < il) {
                 key = attributes[i];
+
                 if (has(row, key)) {
                     out[key] = row[key];
                 }
-                i++;
             }
 
             return out;

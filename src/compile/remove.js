@@ -1,6 +1,6 @@
 var filter = require("filter"),
     isArray = require("is_array"),
-    equalWhere = require("./equal_where");
+    equalWhere = require("./equalWhere");
 
 
 module.exports = remove;
@@ -9,17 +9,16 @@ module.exports = remove;
 function remove(rows, where) {
     return isArray(where) ?
         filter(rows, function fitlerWhere(row) {
-            var i = 0,
-                il = where.length,
+            var i = -1,
+                il = where.length - 1,
                 condition;
 
-            while (il--) {
+            while (i++ < il) {
                 condition = where[i];
 
                 if (!equalWhere(row[condition[0]], condition[2], condition[1])) {
                     return true;
                 }
-                i++;
             }
 
             return false;

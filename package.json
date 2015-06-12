@@ -1,7 +1,7 @@
 {
   "name": "rel",
   "version": "0.0.1",
-  "description": "relational algebra for the browser and node.js",
+  "description": "rel for the browser and node.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanfaucett/rel.git"
@@ -11,8 +11,11 @@
     "rel",
     "rel.js"
   ],
+  "scripts": {
+    "test": "mocha"
+  },
   "author": "Nathan Faucett",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -22,14 +25,11 @@
   },
   "dependencies": {
     "filter": "git://github.com/nathanfaucett/filter",
-    "for_each": "git://github.com/nathanfaucett/for_each",
     "has": "git://github.com/nathanfaucett/has",
-    "inflections_en": "git://github.com/nathanfaucett/inflections_en",
+    "index_of": "git://github.com/nathanfaucett/index_of.git",
     "is_array": "git://github.com/nathanfaucett/is_array",
-    "is_object_like": "git://github.com/nathanfaucett/is_object_like",
-    "is_string": "git://github.com/nathanfaucett/is_string",
+    "is_string": "git://github.com/nathanfaucett/is_string.git",
     "key_mirror": "git://github.com/nathanfaucett/key_mirror",
-    "map": "git://github.com/nathanfaucett/map",
-    "singularize": "git://github.com/nathanfaucett/singularize"
+    "map": "git://github.com/nathanfaucett/map"
   }
 }

@@ -1,6 +1,6 @@
-var joinRow = require("./join_row"),
-    joinRowFillNull = require("./join_row_fill_null"),
-    rowsEqualWhere = require("./rows_equal_where");
+var joinRow = require("./joinRow"),
+    joinRowFillNull = require("./joinRowFillNull"),
+    rowsEqualWhere = require("./rowsEqualWhere");
 
 
 module.exports = rightJoin;
@@ -8,33 +8,30 @@ module.exports = rightJoin;
 
 function rightJoin(a, b, on) {
     var results = [],
-        i = 0,
-        il = b.length,
-        aLength = a.length,
+        i = -1,
+        il = b.length - 1,
+        aLength = a.length - 1,
         rowA, rowB, j, jl, found;
 
-    while (il--) {
+    while (i++ < il) {
         rowB = b[i];
 
-        j = 0;
+        j = -1;
         jl = aLength;
         found = false;
 
-        while (jl--) {
+        while (j++ < jl) {
             rowA = a[j];
 
             if (rowsEqualWhere(rowA, rowB, on)) {
                 results[results.length] = joinRow(rowA, rowB);
                 found = true;
             }
-            j++;
         }
 
         if (!found && rowA) {
             results[results.length] = joinRowFillNull(rowB, rowA);
         }
-
-        i++;
     }
 
     return results;

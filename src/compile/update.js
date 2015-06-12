@@ -1,6 +1,6 @@
 var map = require("map"),
-    updateRow = require("./update_row"),
-    rowEqualWhere = require("./row_equal_where");
+    updateRow = require("./updateRow"),
+    rowEqualWhere = require("./rowEqualWhere");
 
 
 module.exports = update;

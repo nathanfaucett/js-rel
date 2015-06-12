@@ -1,4 +1,4 @@
 rel
 =======
 
-relational algebra for the browser and node.js
+rel for the browser and node.js

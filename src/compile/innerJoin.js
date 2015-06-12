@@ -1,5 +1,5 @@
-var joinRow = require("./join_row"),
-    rowsEqualWhere = require("./rows_equal_where");
+var joinRow = require("./joinRow"),
+    rowsEqualWhere = require("./rowsEqualWhere");
 
 
 module.exports = innerJoin;
@@ -7,25 +7,23 @@ module.exports = innerJoin;
 
 function innerJoin(a, b, on) {
     var results = [],
-        i = 0,
-        il = a.length,
-        bLength = b.length,
+        i = -1,
+        il = a.length - 1,
+        bLength = b.length - 1,
         rowA, rowB, j, jl;
 
-    while (il--) {
+    while (i++ < il) {
         rowA = a[i];
 
-        j = 0;
+        j = -1;
         jl = bLength;
-        while (jl--) {
+        while (j++ < jl) {
             rowB = b[j];
 
             if (rowsEqualWhere(rowA, rowB, on)) {
                 results[results.length] = joinRow(rowA, rowB);
             }
-            j++;
         }
-        i++;
     }
 
     return results;

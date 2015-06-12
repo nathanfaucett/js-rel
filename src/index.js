@@ -1,17 +1,17 @@
-var consts = require("./consts"),
-    select = require("./operations/select");
+var isString = require("is_string"),
+    Relation = require("./Relation"),
+    consts = require("./consts");
 
 
 module.exports = rel;
 
 
-function rel(from, where) {
-    return select(from, where);
+function rel(from, adapter) {
+    if (!isString(from)) {
+        throw new TypeError("rel(from, adapter) from must be a string");
+    } else {
+        return new Relation(null, consts.FROM, from, adapter);
+    }
 }
 
-rel.compile = require("./compile");
-rel.MemoryAdaptor = require("./memory_adaptor");
-
-rel.INNER_JOIN = consts.INNER_JOIN;
-rel.LEFT_JOIN = consts.LEFT_JOIN;
-rel.RIGHT_JOIN = consts.RIGHT_JOIN;
+rel.MemoryAdapter = require("./MemoryAdapter");
