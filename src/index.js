@@ -14,4 +14,5 @@ function rel(from, adapter) {
     }
 }
 
+rel.consts = consts;
 rel.MemoryAdapter = require("./MemoryAdapter");

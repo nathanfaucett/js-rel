@@ -50,7 +50,7 @@ function compileStatement(tables, from, relation) {
             return createProject(notation);
 
         case consts.INSERT:
-            return createInsert(tables, from, notation);
+            return createInsert(tables, from, notation.attributes, notation.values);
         case consts.UPDATE:
             return createUpdate(tables, from, notation.attributes, notation.values, notation.where);
         case consts.REMOVE:
@@ -90,14 +90,14 @@ function createProject(what) {
     };
 }
 
-function createInsert(tables, from, rows) {
+function createInsert(tables, from, attributes, values) {
     var localInsert = insert;
 
     return function insert(results) {
         if (results === tables[from]) {
-            return (tables[from] = localInsert(results, rows));
+            return (tables[from] = localInsert(results, attributes, values));
         } else {
-            return localInsert(results, rows);
+            return localInsert(results, attributes, values);
         }
     };
 }

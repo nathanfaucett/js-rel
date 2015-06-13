@@ -4,15 +4,14 @@ var createRow = require("./createRow");
 module.exports = insert;
 
 
-function insert(rows, list) {
+function insert(rows, attributes, values) {
     var results = rows.slice(),
         i = -1,
-        il = list.length - 1,
-        value;
+        il = values.length - 1;
+
 
     while (i++ < il) {
-        value = list[i];
-        results[results.length] = createRow(value[0], value[1]);
+        results[results.length] = createRow(attributes, values[i]);
     }
 
     return results;

@@ -103,13 +103,10 @@ describe("rel(from, adapter)", function() {
             });
         });
     });
-    describe("insert(rows)", function() {
+    describe("insert(attributes, values)", function() {
         it("should insert rows", function(done) {
-            var r = rel("users", usersAdapter).insert([
-                [
-                    ["users.id", "users.email"],
-                    [4, "new@new.com"]
-                ]
+            var r = rel("users", usersAdapter).insert(["users.id", "users.email"], [
+                [4, "new@new.com"]
             ]);
 
             r.run(function(error, results) {

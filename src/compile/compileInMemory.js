@@ -45,7 +45,7 @@ function compileStatement(relation) {
             return createProject(notation);
 
         case consts.INSERT:
-            return createInsert(notation);
+            return createInsert(notation.attributes, notation.values);
         case consts.UPDATE:
             return createUpdate(notation.attributes, notation.values, notation.where);
         case consts.REMOVE:
@@ -78,11 +78,11 @@ function createProject(what) {
     };
 }
 
-function createInsert(rows) {
+function createInsert(attributes, values) {
     var localInsert = insert;
 
     return function insert(results) {
-        return localInsert(results, rows);
+        return localInsert(results, attributes, values);
     };
 }
 

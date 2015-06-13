@@ -48,8 +48,13 @@ RelationPrototype.project = function(attributes) {
     return new Relation(this, consts.PROJECT, attributes, this.adapter);
 };
 
-RelationPrototype.insert = function(rows) {
-    return new Relation(this, consts.INSERT, rows, this.adapter);
+function InsertNotation(attributes, values) {
+    this.attributes = attributes;
+    this.values = values;
+}
+
+RelationPrototype.insert = function(attributes, values) {
+    return new Relation(this, consts.INSERT, new InsertNotation(attributes, values), this.adapter);
 };
 
 function UpdateNotation(attributes, values, where) {
