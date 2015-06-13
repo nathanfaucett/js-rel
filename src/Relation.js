@@ -2,6 +2,7 @@ var keyMirror = require("key_mirror"),
     innerJoin = require("./compile/innerJoin"),
     leftJoin = require("./compile/leftJoin"),
     rightJoin = require("./compile/rightJoin"),
+    compileInMemory = require("./compile/compileInMemory"),
     consts = require("./consts");
 
 
@@ -26,6 +27,16 @@ function Relation(from, operation, notation, adapter, isJoin) {
     this.__isJoin = !!isJoin;
 }
 RelationPrototype = Relation.prototype;
+
+RelationPrototype.copy = function(relation) {
+    this.from = relation.from;
+    this.operation = relation.operation;
+    this.notation = relation.notation;
+    this.adapter = relation.adapter;
+    this.__isJoin = relation.__isJoin;
+    this.__run = null;
+    return this;
+};
 
 RelationPrototype.__isRelation__ = true;
 
@@ -74,18 +85,37 @@ RelationPrototype.run = function(callback) {
 
 RelationPrototype.compile = function() {
     if (!this.__run) {
-        return (this.run = compileRelation(this, []));
+        return (this.__run = compileRelation(this, []));
     } else {
         return this.__run;
     }
 };
 
 function compileRelation(relation, stack) {
-    var from = relation.from;
+    var from = relation.from,
+        notation;
 
     if (from !== null) {
-        if (from.__isJoin && from.adapter !== from.notation.relation.adapter) {
-            return createJoin(from);
+        notation = relation.notation;
+        if (relation.__isJoin && relation.adapter !== notation.relation.adapter) {
+            if (stack.length) {
+                return createStackJoin(
+                    createJoin(
+                        from.compile(),
+                        notation.relation.compile(),
+                        notation.on,
+                        relation.operation
+                    ),
+                    compileInMemory(stack)
+                );
+            } else {
+                return createJoin(
+                    from.compile(),
+                    notation.relation.compile(),
+                    notation.on,
+                    relation.operation
+                );
+            }
         } else {
             stack.unshift(relation);
             return compileRelation(from, stack);
@@ -99,13 +129,22 @@ function compileRelation(relation, stack) {
     }
 }
 
-function createJoin(relation) {
-    var relationA = relation.from,
-        relationB = relation.notation.relation,
-        on = relation.notation.on,
-        join;
+function createStackJoin(runJoin, runStack) {
+    return function run(callback) {
+        runJoin(function onJoin(error, results) {
+            if (error) {
+                callback(error);
+            } else {
+                runStack(results, callback);
+            }
+        });
+    };
+}
 
-    switch (relation.operation) {
+function createJoin(relationRunA, relationRunB, on, type) {
+    var join;
+
+    switch (type) {
         case consts.INNER_JOIN:
             join = innerJoin;
             break;
@@ -118,11 +157,11 @@ function createJoin(relation) {
     }
 
     return function runJoin(callback) {
-        relationA.run(function(error, resultsA) {
+        relationRunA(function onRelationRunA(error, resultsA) {
             if (error) {
                 callback(error);
             } else {
-                relationB.run(function(error, resultsB) {
+                relationRunB(function onRelationRunB(error, resultsB) {
                     if (error) {
                         callback(error);
                     } else {

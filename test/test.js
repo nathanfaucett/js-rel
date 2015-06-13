@@ -2,10 +2,12 @@ var assert = require("assert"),
     rel = require("../src/index");
 
 
-var adapter = new rel.MemoryAdapter();
+var usersAdapter = new rel.MemoryAdapter(),
+    organizationsAdapter = new rel.MemoryAdapter(),
+    organizationMembershipsAdapter = new rel.MemoryAdapter();
 
 
-adapter
+usersAdapter
     .createTable("users", {
         id: "number",
         email: "string"
@@ -23,7 +25,7 @@ adapter
         email: "bill@bill.com"
     });
 
-adapter
+organizationsAdapter
     .createTable("organizations", {
         id: "number",
         name: "string"
@@ -37,7 +39,7 @@ adapter
         name: "mozilla"
     });
 
-adapter
+organizationMembershipsAdapter
     .createTable("organization_memberships", {
         id: "number",
         user_id: "number",
@@ -63,8 +65,9 @@ adapter
 describe("rel(from, adapter)", function() {
     describe("select(where)", function() {
         it("should return rows where, where statements are true", function(done) {
-            var r = rel("users", adapter).select([
-                ["users.id", ">", 2]
+            var r = rel("users", usersAdapter).select([
+                ["users.id", ">", 2],
+                ["users.email", "=", "bill@bill.com"]
             ]);
 
             r.run(function(error, results) {
@@ -81,8 +84,8 @@ describe("rel(from, adapter)", function() {
         });
     });
     describe("project(what)", function() {
-        it("should returns projection of row's attributes", function(done) {
-            var r = rel("users", adapter).project(["users.id"]);
+        it("should return projection of row's attributes", function(done) {
+            var r = rel("users", usersAdapter).project(["users.id"]);
 
             r.run(function(error, results) {
                 if (error) {
@@ -102,7 +105,7 @@ describe("rel(from, adapter)", function() {
     });
     describe("insert(rows)", function() {
         it("should insert rows", function(done) {
-            var r = rel("users", adapter).insert([
+            var r = rel("users", usersAdapter).insert([
                 [
                     ["users.id", "users.email"],
                     [4, "new@new.com"]
@@ -133,7 +136,7 @@ describe("rel(from, adapter)", function() {
     });
     describe("remove(where)", function() {
         it("should remove rows where, where statements are true", function(done) {
-            var r = rel("users", adapter).remove([
+            var r = rel("users", usersAdapter).remove([
                 ["users.id", "=", 4]
             ]);
 
@@ -158,7 +161,7 @@ describe("rel(from, adapter)", function() {
     });
     describe("update(attributes, values, where)", function() {
         it("should update rows with attrubtes and corresponding values where, where statements are true", function(done) {
-            var r = rel("users", adapter).update(
+            var r = rel("users", usersAdapter).update(
                 ["users.email"], ["new@new.com"], [
                     ["users.id", "=", 1]
                 ]
@@ -186,13 +189,22 @@ describe("rel(from, adapter)", function() {
     describe("join(relation, on[, type])", function() {
         describe("where type is INNER_JOIN (default)", function() {
             it("should return all rows when there is at least one match in both tables", function(done) {
-                var r = rel("users", adapter).select([
+                var r = rel("users", usersAdapter).select([
                     ["users.id", "=", 1]
                 ]).join(
-                    rel("organization_memberships", adapter), [
+                    rel("organization_memberships", organizationMembershipsAdapter), [
                         ["users.id", "=", "organization_memberships.user_id"]
                     ]
-                );
+                ).join(
+                    rel("organizations", organizationsAdapter), [
+                        ["organization_memberships.organization_id", "=", "organizations.id"]
+                    ]
+                ).project([
+                    "users.id",
+                    "users.email",
+                    "organizations.id",
+                    "organizations.name"
+                ]);
 
                 r.run(function(error, results) {
                     if (error) {
@@ -201,9 +213,8 @@ describe("rel(from, adapter)", function() {
                         assert.deepEqual(results, [{
                             "users.id": 1,
                             "users.email": "new@new.com",
-                            "organization_memberships.id": 1,
-                            "organization_memberships.user_id": 1,
-                            "organization_memberships.organization_id": 1
+                            "organizations.id": 1,
+                            "organizations.name": "google"
                         }]);
                         done();
                     }

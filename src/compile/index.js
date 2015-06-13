@@ -24,7 +24,7 @@ function compile(tables, from, results, relations) {
         stack[stack.length] = compileStatement(tables, from, relations[i]);
     }
 
-    return function(callback) {
+    return function run(callback) {
         var i = -1,
             il = stack.length - 1,
             localResults = results;
