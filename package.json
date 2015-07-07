@@ -12,7 +12,8 @@
     "rel.js"
   ],
   "scripts": {
-    "test": "mocha"
+    "test": "npm run node-test",
+    "node-test": "node ./test/test.js | ./node_modules/.bin/tap-spec"
   },
   "author": "Nathan Faucett",
   "license": "MIT",
@@ -21,12 +22,12 @@
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-jsbeautifier": "^0.2.7",
-    "mocha": "^2.1.0"
+    "tap-spec": "^3.0.0",
+    "tape": "^4.0.0"
   },
   "dependencies": {
     "filter": "git://github.com/nathanfaucett/filter",
     "has": "git://github.com/nathanfaucett/has",
-    "index_of": "git://github.com/nathanfaucett/index_of",
     "is_array": "git://github.com/nathanfaucett/is_array",
     "is_string": "git://github.com/nathanfaucett/is_string",
     "key_mirror": "git://github.com/nathanfaucett/key_mirror",

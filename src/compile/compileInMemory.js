@@ -52,7 +52,7 @@ function compileStatement(relation) {
             return createRemove(notation);
 
         default:
-            throw new Error("Invalid Relation operation " + relation.operation);
+            throw new Error("Invalid in memory Relation operation " + relation.operation);
     }
 }
 

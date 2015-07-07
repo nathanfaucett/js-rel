@@ -159,6 +159,8 @@ function createJoin(relationRunA, relationRunB, on, type) {
         case consts.RIGHT_JOIN:
             join = rightJoin;
             break;
+        default:
+            throw new TypeError("Relation compile() Invalid join " + type + " must be INNER_JOIN, LEFT_JOIN, or RIGHT_JOIN");
     }
 
     return function runJoin(callback) {
