@@ -18,13 +18,14 @@ var RelationPrototype,
 module.exports = Relation;
 
 
-function Relation(from, operation, notation, adapter, isJoin) {
+function Relation(from, operation, notation, table, adapter, isJoin) {
     this.from = from;
     this.operation = operation;
     this.notation = notation;
+    this.table = table;
     this.adapter = adapter;
-    this.__run = null;
     this.__isJoin = !!isJoin;
+    this.__run = null;
 }
 RelationPrototype = Relation.prototype;
 
@@ -32,20 +33,25 @@ RelationPrototype.copy = function(relation) {
     this.from = relation.from;
     this.operation = relation.operation;
     this.notation = relation.notation;
+    this.table = table;
     this.adapter = relation.adapter;
     this.__isJoin = relation.__isJoin;
     this.__run = null;
     return this;
 };
 
+RelationPrototype.clone = function() {
+    return new Relation().copy(this);
+};
+
 RelationPrototype.__isRelation__ = true;
 
 RelationPrototype.select = function(where) {
-    return new Relation(this, consts.SELECT, where, this.adapter);
+    return new Relation(this, consts.SELECT, where, this.table, this.adapter);
 };
 
 RelationPrototype.project = function(attributes) {
-    return new Relation(this, consts.PROJECT, attributes, this.adapter);
+    return new Relation(this, consts.PROJECT, attributes, this.table, this.adapter);
 };
 
 function InsertNotation(attributes, values) {
@@ -54,7 +60,7 @@ function InsertNotation(attributes, values) {
 }
 
 RelationPrototype.insert = function(attributes, values) {
-    return new Relation(this, consts.INSERT, new InsertNotation(attributes, values), this.adapter);
+    return new Relation(this, consts.INSERT, new InsertNotation(attributes, values), this.table, this.adapter);
 };
 
 function UpdateNotation(attributes, values, where) {
@@ -64,11 +70,11 @@ function UpdateNotation(attributes, values, where) {
 }
 
 RelationPrototype.update = function(attributes, values, where) {
-    return new Relation(this, consts.UPDATE, new UpdateNotation(attributes, values, where), this.adapter);
+    return new Relation(this, consts.UPDATE, new UpdateNotation(attributes, values, where), this.table, this.adapter);
 };
 
 RelationPrototype.remove = function(where) {
-    return new Relation(this, consts.REMOVE, where, this.adapter);
+    return new Relation(this, consts.REMOVE, where, this.table, this.adapter);
 };
 
 function JoinNotation(relation, on) {
@@ -80,7 +86,7 @@ RelationPrototype.join = function(relation, on, type) {
     if (!relation.__isRelation__) {
         throw new TypeError("Relation join(relation, on, type) relation must be a instance of Relation");
     } else {
-        return new Relation(this, JOINS[type] || consts.INNER_JOIN, new JoinNotation(relation, on), this.adapter, true);
+        return new Relation(this, JOINS[type] || consts.INNER_JOIN, new JoinNotation(relation, on), this.table, this.adapter, true);
     }
 };
 

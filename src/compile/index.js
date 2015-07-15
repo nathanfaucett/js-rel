@@ -91,11 +91,12 @@ function createProject(what) {
 }
 
 function createInsert(tables, from, attributes, values) {
-    var localInsert = insert;
+    var localInsert = insert,
+        tableName = from.tableName;
 
     return function insert(results) {
-        if (results === tables[from]) {
-            return (tables[from] = localInsert(results, attributes, values));
+        if (results === tables[tableName]) {
+            return (tables[tableName] = localInsert(results, attributes, values));
         } else {
             return localInsert(results, attributes, values);
         }
@@ -103,11 +104,12 @@ function createInsert(tables, from, attributes, values) {
 }
 
 function createUpdate(tables, from, attributes, values, where) {
-    var localUpdate = update;
+    var localUpdate = update,
+        tableName = from.tableName;
 
     return function update(results) {
-        if (results === tables[from]) {
-            return (tables[from] = localUpdate(results, attributes, values, where));
+        if (results === tables[tableName]) {
+            return (tables[tableName] = localUpdate(results, attributes, values, where));
         } else {
             return localUpdate(results, attributes, values, where);
         }
@@ -115,11 +117,12 @@ function createUpdate(tables, from, attributes, values, where) {
 }
 
 function createRemove(tables, from, where) {
-    var localRemove = remove;
+    var localRemove = remove,
+        tableName = from.tableName;
 
     return function remove(results) {
-        if (results === tables[from]) {
-            return (tables[from] = localRemove(results, where));
+        if (results === tables[tableName]) {
+            return (tables[tableName] = localRemove(results, where));
         } else {
             return localRemove(results, where);
         }

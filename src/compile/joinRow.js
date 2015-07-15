@@ -5,16 +5,17 @@ module.exports = joinRow;
 
 
 function joinRow(a, b) {
-    var out = {},
+    var localHas = has,
+        out = {},
         key;
 
     for (key in a) {
-        if (has(a, key)) {
+        if (localHas(a, key)) {
             out[key] = a[key];
         }
     }
     for (key in b) {
-        if (has(b, key)) {
+        if (localHas(b, key)) {
             out[key] = b[key];
         }
     }

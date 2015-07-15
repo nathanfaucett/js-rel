@@ -9,7 +9,8 @@ module.exports = project;
 function project(rows, attributes) {
     return isArray(attributes) ?
         map(rows, function mapSelect(row) {
-            var out = {},
+            var localHas = has,
+                out = {},
                 i = -1,
                 il = attributes.length - 1,
                 key;
@@ -17,7 +18,7 @@ function project(rows, attributes) {
             while (i++ < il) {
                 key = attributes[i];
 
-                if (has(row, key)) {
+                if (localHas(row, key)) {
                     out[key] = row[key];
                 }
             }
@@ -25,11 +26,12 @@ function project(rows, attributes) {
             return out;
         }) :
         map(rows, function mapSelect(row) {
-            var out = {},
+            var localHas = has,
+                out = {},
                 key;
 
             for (key in row) {
-                if (has(row, key)) {
+                if (localHas(row, key)) {
                     out[key] = row[key];
                 }
             }

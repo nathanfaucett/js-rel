@@ -7,6 +7,21 @@ var usersAdapter = new rel.MemoryAdapter(),
     organizationMembershipsAdapter = new rel.MemoryAdapter();
 
 
+var users = rel.createTable("users", {
+        id: "number",
+        email: "string"
+    }),
+    organizations = rel.createTable("organizations", {
+        id: "number",
+        name: "string"
+    }),
+    organizationMemberships = rel.createTable("organization_memberships", {
+        id: "number",
+        user_id: "number",
+        organization_id: "number"
+    });
+
+
 usersAdapter
     .createTable("users", {
         id: "number",
@@ -62,14 +77,14 @@ organizationMembershipsAdapter
     });
 
 tape("select(where) should return rows where, where statements are true", function(assert) {
-    var r = rel("users", usersAdapter).select([
-        ["users.id", ">", 2],
-        ["users.email", "=", "bill@bill.com"]
+    var r = users(usersAdapter).select([
+        [users.attributes.id, ">", 2],
+        [users.attributes.email, "=", "bill@bill.com"]
     ]);
 
     r.run(function(error, results) {
         if (error) {
-            done(error);
+            assert.end(error);
         } else {
             assert.deepEqual(results, [{
                 "users.id": 3,
@@ -79,8 +94,9 @@ tape("select(where) should return rows where, where statements are true", functi
         }
     });
 });
+
 tape("project(what) should return projection of row's attributes", function(assert) {
-    var r = rel("users", usersAdapter).project(["users.id"]);
+    var r = users(usersAdapter).project([users.attributes.id]);
 
     r.run(function(error, results) {
         if (error) {
@@ -98,7 +114,7 @@ tape("project(what) should return projection of row's attributes", function(asse
     });
 });
 tape("insert(attributes, values) should insert rows", function(assert) {
-    var r = rel("users", usersAdapter).insert(["users.id", "users.email"], [
+    var r = users(usersAdapter).insert([users.attributes.id, users.attributes.email], [
         [4, "new@new.com"]
     ]);
 
@@ -124,8 +140,8 @@ tape("insert(attributes, values) should insert rows", function(assert) {
     });
 });
 tape("remove(where) should remove rows where, where statements are true", function(assert) {
-    var r = rel("users", usersAdapter).remove([
-        ["users.id", "=", 4]
+    var r = users(usersAdapter).remove([
+        [users.attributes.id, "=", 4]
     ]);
 
     r.run(function(error, results) {
@@ -150,8 +166,8 @@ tape(
     "update(attributes, values, where) " +
     "should update rows with attrubtes and corresponding values where, where statements are true",
     function(assert) {
-        var r = rel("users", usersAdapter).update(
-            ["users.email"], ["new@new.com"], [
+        var r = users(usersAdapter).update(
+            [users.attributes.email], ["new@new.com"], [
                 ["users.id", "=", 1]
             ]
         );
@@ -178,21 +194,21 @@ tape(
     "join(relation, on[, type]) where type is INNER_JOIN (default) " +
     "should return all rows when there is at least one match in both tables",
     function(assert) {
-        var r = rel("users", usersAdapter).select([
-            ["users.id", "=", 1]
+        var r = users(usersAdapter).select([
+            [users.attributes.id, "=", 1]
         ]).join(
-            rel("organization_memberships", organizationMembershipsAdapter), [
-                ["users.id", "=", "organization_memberships.user_id"]
+            organizationMemberships(organizationMembershipsAdapter), [
+                [users.attributes.id, "=", organizationMemberships.attributes.user_id]
             ]
         ).join(
-            rel("organizations", organizationsAdapter), [
-                ["organization_memberships.organization_id", "=", "organizations.id"]
+            organizations(organizationsAdapter), [
+                [organizationMemberships.attributes.organization_id, "=", organizations.attributes.id]
             ]
         ).project([
-            "users.id",
-            "users.email",
-            "organizations.id",
-            "organizations.name"
+            users.attributes.id,
+            users.attributes.email,
+            organizations.attributes.id,
+            organizations.attributes.name
         ]);
 
         r.run(function(error, results) {

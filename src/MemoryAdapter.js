@@ -34,13 +34,14 @@ MemoryAdapterPrototype.createTable = function(tableName, columns) {
 };
 
 MemoryAdapterPrototype.createRow = function(tableName, values) {
-    var table = this.__tables[tableName],
+    var localHas = has,
+        table = this.__tables[tableName],
         tableSchema = this.__tableSchema[tableName],
         row = {},
         key;
 
     for (key in values) {
-        if (has(tableSchema, key)) {
+        if (localHas(tableSchema, key)) {
             row[tableName + "." + key] = values[key];
         } else {
             throw new Error("MemoryAdapter.createRow: table does not have column with name " + key);
@@ -53,5 +54,5 @@ MemoryAdapterPrototype.createRow = function(tableName, values) {
 
 MemoryAdapterPrototype.compile = function(from, relations) {
     var tables = this.__tables;
-    return compile(tables, from, tables[from], relations);
+    return compile(tables, from, tables[from.tableName], relations);
 };

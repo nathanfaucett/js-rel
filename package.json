@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "test": "npm run node-test",
-    "node-test": "node ./test/test.js | ./node_modules/.bin/tap-spec"
+    "node-test": "node ./test/index.js | ./node_modules/.bin/tap-spec"
   },
   "author": "Nathan Faucett",
   "license": "MIT",
@@ -28,6 +28,7 @@
   "dependencies": {
     "filter": "git://github.com/nathanfaucett/filter",
     "has": "git://github.com/nathanfaucett/has",
+    "index_of": "git://github.com/nathanfaucett/index_of.git",
     "is_array": "git://github.com/nathanfaucett/is_array",
     "is_string": "git://github.com/nathanfaucett/is_string",
     "key_mirror": "git://github.com/nathanfaucett/key_mirror",
