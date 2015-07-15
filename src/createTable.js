@@ -8,7 +8,7 @@ var has = require("has"),
 var TYPES = [
     "string",
     "number",
-    "bool",
+    "boolean",
     "date"
 ];
 

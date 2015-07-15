@@ -29,21 +29,6 @@ function Relation(from, operation, notation, table, adapter, isJoin) {
 }
 RelationPrototype = Relation.prototype;
 
-RelationPrototype.copy = function(relation) {
-    this.from = relation.from;
-    this.operation = relation.operation;
-    this.notation = relation.notation;
-    this.table = table;
-    this.adapter = relation.adapter;
-    this.__isJoin = relation.__isJoin;
-    this.__run = null;
-    return this;
-};
-
-RelationPrototype.clone = function() {
-    return new Relation().copy(this);
-};
-
 RelationPrototype.__isRelation__ = true;
 
 RelationPrototype.select = function(where) {

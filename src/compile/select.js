@@ -11,12 +11,12 @@ function select(rows, where) {
         filter(rows, function fitlerWhere(row) {
             var i = -1,
                 il = where.length - 1,
-                condition;
+                statement;
 
             while (i++ < il) {
-                condition = where[i];
+                statement = where[i];
 
-                if (!equalWhere(row[condition[0]], condition[2], condition[1])) {
+                if (!equalWhere(row[statement[0]], statement[2], statement[1])) {
                     return false;
                 }
             }

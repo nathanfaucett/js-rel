@@ -5,16 +5,16 @@ module.exports = rowEqualWhere;
 
 
 function rowEqualWhere(row, where) {
-    var i = 0,
-        il = where.length,
-        condition;
+    var i = -1,
+        il = where.length - 1,
+        statement;
 
-    while (il--) {
-        condition = where[i];
-        if (!equalWhere(row[condition[0]], condition[2], condition[1])) {
+    while (i++ < il) {
+        statement = where[i];
+
+        if (!equalWhere(row[statement[0]], statement[2], statement[1])) {
             return false;
         }
-        i++;
     }
 
     return true;

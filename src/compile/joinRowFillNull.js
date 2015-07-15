@@ -1,10 +1,10 @@
 var has = require("has");
 
 
-module.exports = joinRow;
+module.exports = joinRowFillNull;
 
 
-function joinRow(a, b) {
+function joinRowFillNull(a, b) {
     var localHas = has,
         out = {},
         key;
