@@ -45,7 +45,6 @@ function parseAttributes(table, columns) {
     for (columnName in columns) {
         if (localHas(columns, columnName)) {
             fullColumnName = tableName + "." + columnName;
-
             attributes[columnName] = fullColumnName;
             types[fullColumnName] = parseColumnType(columns[columnName]);
         }

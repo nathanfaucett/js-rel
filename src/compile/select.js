@@ -1,4 +1,4 @@
-var filter = require("filter"),
+var arrayFilter = require("array-filter"),
     isArray = require("is_array"),
     equalWhere = require("./equalWhere");
 
@@ -8,7 +8,7 @@ module.exports = select;
 
 function select(rows, where) {
     return isArray(where) ?
-        filter(rows, function fitlerWhere(row) {
+        arrayFilter(rows, function fitlerWhere(row) {
             var i = -1,
                 il = where.length - 1,
                 statement;
