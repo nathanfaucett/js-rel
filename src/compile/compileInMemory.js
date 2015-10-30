@@ -57,7 +57,7 @@ function compileStatement(relation) {
 }
 
 function createFrom() {
-    return function from(results) {
+    return function fromFunction(results) {
         return results;
     };
 }

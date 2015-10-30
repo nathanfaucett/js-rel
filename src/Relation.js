@@ -24,7 +24,8 @@ function Relation(from, operation, notation, table, adapter, isJoin) {
     this.notation = notation;
     this.table = table;
     this.adapter = adapter;
-    this.__isJoin = !!isJoin;
+    this.__isJoin = isJoin;
+    this.__isCompiled = false;
     this.__run = null;
 }
 RelationPrototype = Relation.prototype;
@@ -32,11 +33,11 @@ RelationPrototype = Relation.prototype;
 RelationPrototype.__isRelation__ = true;
 
 RelationPrototype.select = function(where) {
-    return new Relation(this, consts.SELECT, where, this.table, this.adapter);
+    return new Relation(this, consts.SELECT, where, this.table, this.adapter, false);
 };
 
 RelationPrototype.project = function(attributes) {
-    return new Relation(this, consts.PROJECT, attributes, this.table, this.adapter);
+    return new Relation(this, consts.PROJECT, attributes, this.table, this.adapter, false);
 };
 
 function InsertNotation(attributes, values) {
@@ -45,7 +46,7 @@ function InsertNotation(attributes, values) {
 }
 
 RelationPrototype.insert = function(attributes, values) {
-    return new Relation(this, consts.INSERT, new InsertNotation(attributes, values), this.table, this.adapter);
+    return new Relation(this, consts.INSERT, new InsertNotation(attributes, values), this.table, this.adapter, false);
 };
 
 function UpdateNotation(attributes, values, where) {
@@ -55,11 +56,11 @@ function UpdateNotation(attributes, values, where) {
 }
 
 RelationPrototype.update = function(attributes, values, where) {
-    return new Relation(this, consts.UPDATE, new UpdateNotation(attributes, values, where), this.table, this.adapter);
+    return new Relation(this, consts.UPDATE, new UpdateNotation(attributes, values, where), this.table, this.adapter, false);
 };
 
 RelationPrototype.remove = function(where) {
-    return new Relation(this, consts.REMOVE, where, this.table, this.adapter);
+    return new Relation(this, consts.REMOVE, where, this.table, this.adapter, false);
 };
 
 function JoinNotation(relation, on) {
@@ -80,24 +81,29 @@ RelationPrototype.run = function(callback) {
 };
 
 RelationPrototype.compile = function() {
-    if (!this.__run) {
-        return (this.__run = compileRelation(this, []));
-    } else {
+    var run;
+
+    if (this.__isCompiled) {
         return this.__run;
+    } else {
+        run = compileRelation(this, []);
+        this.__isCompiled = true;
+        this.__run = run;
+        return run;
     }
 };
 
 function compileRelation(relation, stack) {
-    var from = relation.from,
+    var fromRelation = relation.from,
         notation;
 
-    if (from !== null) {
+    if (fromRelation !== null) {
         notation = relation.notation;
         if (relation.__isJoin && relation.adapter !== notation.relation.adapter) {
             if (stack.length) {
                 return createStackJoin(
                     createJoin(
-                        from.compile(),
+                        fromRelation.compile(),
                         notation.relation.compile(),
                         notation.on,
                         relation.operation
@@ -106,7 +112,7 @@ function compileRelation(relation, stack) {
                 );
             } else {
                 return createJoin(
-                    from.compile(),
+                    fromRelation.compile(),
                     notation.relation.compile(),
                     notation.on,
                     relation.operation
@@ -114,7 +120,7 @@ function compileRelation(relation, stack) {
             }
         } else {
             stack.unshift(relation);
-            return compileRelation(from, stack);
+            return compileRelation(fromRelation, stack);
         }
     } else {
         if (relation.operation !== consts.FROM) {

@@ -76,142 +76,128 @@ organizationMembershipsAdapter
         organization_id: 2
     });
 
-tape("select(where) should return rows where, where statements are true", function(assert) {
-    var r = users(usersAdapter).select([
-        [users.attributes.id, ">", 2],
-        [users.attributes.email, "=", "bill@bill.com"]
-    ]);
+tape("select(where: Array<Array[attribute: String, comparision: String, value: Any]>)", function(assert) {
 
-    r.run(function(error, results) {
-        if (error) {
-            assert.end(error);
-        } else {
-            assert.deepEqual(results, [{
-                "users.id": 3,
-                "users.email": "bill@bill.com"
-            }]);
-            assert.end();
-        }
-    });
+    users(usersAdapter)
+        .select([
+            [users.attributes.id, ">", 2],
+            [users.attributes.email, "=", "bill@bill.com"]
+        ])
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    "users.id": 3,
+                    "users.email": "bill@bill.com"
+                }], "should return rows where statements are true");
+                assert.end();
+            }
+        });
 });
 
-tape("project(what) should return projection of row's attributes", function(assert) {
-    var r = users(usersAdapter).project([users.attributes.id]);
+tape("project(what: Array<String>)", function(assert) {
 
-    r.run(function(error, results) {
-        if (error) {
-            assert.end(error);
-        } else {
-            assert.deepEqual(results, [{
-                "users.id": 1
-            }, {
-                "users.id": 2
-            }, {
-                "users.id": 3
-            }]);
-            assert.end();
-        }
-    });
+    users(usersAdapter)
+        .project([users.attributes.id])
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    "users.id": 1
+                }, {
+                    "users.id": 2
+                }, {
+                    "users.id": 3
+                }], "should return projection of row's attributes");
+                assert.end();
+            }
+        });
 });
-tape("insert(attributes, values) should insert rows", function(assert) {
-    var r = users(usersAdapter).insert([users.attributes.id, users.attributes.email], [
-        [4, "new@new.com"]
-    ]);
 
-    r.run(function(error, results) {
-        if (error) {
-            assert.end(error);
-        } else {
-            assert.deepEqual(results, [{
-                "users.id": 1,
-                "users.email": "bob@bob.com"
-            }, {
-                "users.id": 2,
-                "users.email": "frank@frank.com"
-            }, {
-                "users.id": 3,
-                "users.email": "bill@bill.com"
-            }, {
-                "users.id": 4,
-                "users.email": "new@new.com"
-            }]);
-            assert.end();
-        }
-    });
-});
-tape("remove(where) should remove rows where, where statements are true", function(assert) {
-    var r = users(usersAdapter).remove([
-        [users.attributes.id, "=", 4]
-    ]);
+tape("insert(attributes: Array<String>, values: Array<Array<Any>>)", function(assert) {
 
-    r.run(function(error, results) {
-        if (error) {
-            assert.end(error);
-        } else {
-            assert.deepEqual(results, [{
-                "users.id": 1,
-                "users.email": "bob@bob.com"
-            }, {
-                "users.id": 2,
-                "users.email": "frank@frank.com"
-            }, {
-                "users.id": 3,
-                "users.email": "bill@bill.com"
-            }]);
-            assert.end();
-        }
-    });
+    users(usersAdapter)
+        .insert([users.attributes.id, users.attributes.email], [
+            [4, "new@new.com"]
+        ])
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    "users.id": 4,
+                    "users.email": "new@new.com"
+                }], "should insert rows into table, and return the new rows");
+                assert.end();
+            }
+        });
 });
-tape(
-    "update(attributes, values, where) " +
-    "should update rows with attrubtes and corresponding values where, where statements are true",
-    function(assert) {
-        var r = users(usersAdapter).update(
+
+tape("remove(where: Array<Array[attribute: String, comparision: String, value: Any]>)", function(assert) {
+
+    users(usersAdapter)
+        .remove([
+            [users.attributes.id, "=", 4]
+        ])
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    "users.id": 4,
+                    "users.email": "new@new.com"
+                }], "should remove rows from table, and return the removed rows");
+                assert.end();
+            }
+        });
+});
+
+tape("update(attributes: Array<String>, values: Array<Any>, where: Array<Array[attribute: String, comparision: String, value: Any]>)", function(assert) {
+
+    users(usersAdapter)
+        .update(
             [users.attributes.email], ["new@new.com"], [
                 ["users.id", "=", 1]
             ]
-        );
-
-        r.run(function(error, results) {
+        )
+        .run(function onRun(error, results) {
             if (error) {
                 assert.end(error);
             } else {
                 assert.deepEqual(results, [{
                     "users.id": 1,
                     "users.email": "new@new.com"
-                }, {
-                    "users.id": 2,
-                    "users.email": "frank@frank.com"
-                }, {
-                    "users.id": 3,
-                    "users.email": "bill@bill.com"
-                }]);
+                }], "should update rows with attrubtes and corresponding values where statements are true, and return updated rows");
                 assert.end();
             }
         });
-    });
-tape(
-    "join(relation, on[, type]) where type is INNER_JOIN (default) " +
-    "should return all rows when there is at least one match in both tables",
-    function(assert) {
-        var r = users(usersAdapter).select([
+});
+
+tape("join(relation: Relation, on: Array<Array[attribute: String, comparision: String, value: Any]>[, type: String]) where type is INNER_JOIN (default)", function(assert) {
+
+    users(usersAdapter)
+        .select([
             [users.attributes.id, "=", 1]
-        ]).join(
+        ])
+        .join(
             organizationMemberships(organizationMembershipsAdapter), [
                 [users.attributes.id, "=", organizationMemberships.attributes.user_id]
             ]
-        ).join(
+        )
+        .join(
             organizations(organizationsAdapter), [
                 [organizationMemberships.attributes.organization_id, "=", organizations.attributes.id]
             ]
-        ).project([
+        )
+        .project([
             users.attributes.id,
             users.attributes.email,
             organizations.attributes.id,
             organizations.attributes.name
-        ]);
-
-        r.run(function(error, results) {
+        ])
+        .run(function onRun(error, results) {
             if (error) {
                 assert.end(error);
             } else {
@@ -220,8 +206,8 @@ tape(
                     "users.email": "new@new.com",
                     "organizations.id": 1,
                     "organizations.name": "google"
-                }]);
+                }], "should return all rows when there is at least one match in both tables");
                 assert.end();
             }
         });
-    });
+});
