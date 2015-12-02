@@ -11,6 +11,9 @@ module.exports = keyMirror([
     "UPDATE",
     "REMOVE",
 
+    "SKIP",
+    "LIMIT",
+
     "INNER_JOIN",
     "LEFT_JOIN",
     "RIGHT_JOIN"

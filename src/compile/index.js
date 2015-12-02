@@ -12,6 +12,9 @@ var arrayMap = require("array-map"),
 
     insert = require("./insert"),
 
+    skip = require("./skip"),
+    limit = require("./limit"),
+
     innerJoin = require("./innerJoin"),
     leftJoin = require("./leftJoin"),
     rightJoin = require("./rightJoin");
@@ -60,6 +63,11 @@ function compileStatement(tables, fromTable, relation) {
             return createUpdate(tables, fromTable, notation.attributes, notation.values, notation.where);
         case consts.REMOVE:
             return createRemove(tables, fromTable, notation);
+
+        case consts.SKIP:
+            return createSkip(notation);
+        case consts.LIMIT:
+            return createLimit(notation);
 
         case consts.INNER_JOIN:
             return createInnerJoin(tables, notation.relation.notation, notation.on);
@@ -169,6 +177,22 @@ function createRemove(tables, fromTable, where) {
                 return rowEqualWhere(row, where);
             });
         }
+    };
+}
+
+function createSkip(count) {
+    var localSkip = skip;
+
+    return function skip(results) {
+        return localSkip(results, count);
+    };
+}
+
+function createLimit(count) {
+    var localLimit = limit;
+
+    return function limit(results) {
+        return localLimit(results, count);
     };
 }
 

@@ -1,4 +1,5 @@
-var keyMirror = require("key_mirror"),
+var isNull = require("is_null"),
+    keyMirror = require("key_mirror"),
     innerJoin = require("./compile/innerJoin"),
     leftJoin = require("./compile/leftJoin"),
     rightJoin = require("./compile/rightJoin"),
@@ -76,6 +77,14 @@ RelationPrototype.join = function(relation, on, type) {
     }
 };
 
+RelationPrototype.skip = function(count) {
+    return new Relation(this, consts.SKIP, count, this.table, this.adapter, false);
+};
+
+RelationPrototype.limit = function(count) {
+    return new Relation(this, consts.LIMIT, count, this.table, this.adapter, false);
+};
+
 RelationPrototype.run = function(callback) {
     return this.compile()(callback);
 };
@@ -97,7 +106,7 @@ function compileRelation(relation, stack) {
     var fromRelation = relation.from,
         notation;
 
-    if (fromRelation !== null) {
+    if (!isNull(fromRelation)) {
         notation = relation.notation;
         if (relation.__isJoin && relation.adapter !== notation.relation.adapter) {
             if (stack.length) {

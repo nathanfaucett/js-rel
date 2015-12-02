@@ -5,7 +5,10 @@ var consts = require("../consts"),
 
     insert = require("./insert"),
     update = require("./update"),
-    remove = require("./remove");
+    remove = require("./remove"),
+
+    skip = require("./skip"),
+    limit = require("./limit");
 
 
 module.exports = compileInMemory;
@@ -50,6 +53,11 @@ function compileStatement(relation) {
             return createUpdate(notation.attributes, notation.values, notation.where);
         case consts.REMOVE:
             return createRemove(notation);
+
+        case consts.SKIP:
+            return createSkip(notation);
+        case consts.LIMIT:
+            return createLimit(notation);
 
         default:
             throw new Error("Invalid in memory Relation operation " + relation.operation);
@@ -99,5 +107,21 @@ function createRemove(where) {
 
     return function remove(results) {
         return localRemove(results, where);
+    };
+}
+
+function createSkip(count) {
+    var localSkip = skip;
+
+    return function skip(results) {
+        return localSkip(results, count);
+    };
+}
+
+function createLimit(count) {
+    var localLimit = limit;
+
+    return function limit(results) {
+        return localLimit(results, count);
     };
 }

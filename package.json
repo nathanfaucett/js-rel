@@ -30,11 +30,12 @@
   },
   "dependencies": {
     "array-filter": "git://github.com/nathanfaucett/array-filter.git",
+    "array-map": "git://github.com/nathanfaucett/array-map.git",
     "has": "git://github.com/nathanfaucett/has.git",
     "index_of": "git://github.com/nathanfaucett/index_of.git",
     "is_array": "git://github.com/nathanfaucett/is_array.git",
+    "is_null": "git://github.com/nathanfaucett/is_null.git",
     "is_string": "git://github.com/nathanfaucett/is_string.git",
-    "key_mirror": "git://github.com/nathanfaucett/key_mirror.git",
-    "array-map": "git://github.com/nathanfaucett/array-map.git"
+    "key_mirror": "git://github.com/nathanfaucett/key_mirror.git"
   }
 }

@@ -175,6 +175,40 @@ tape("update(attributes: Array<String>, values: Array<Any>, where: Array<Array[a
         });
 });
 
+tape("skip(count: Number)", function(assert) {
+    users(usersAdapter)
+        .select()
+        .skip(2)
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    "users.id": 3,
+                    "users.email": "bill@bill.com"
+                }]);
+                assert.end();
+            }
+        });
+});
+
+tape("limit(count: Number)", function(assert) {
+    users(usersAdapter)
+        .select()
+        .limit(1)
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    "users.id": 1,
+                    "users.email": "new@new.com"
+                }]);
+                assert.end();
+            }
+        });
+});
+
 tape("join(relation: Relation, on: Array<Array[attribute: String, comparision: String, value: Any]>[, type: String]) where type is INNER_JOIN (default)", function(assert) {
 
     users(usersAdapter)
