@@ -1,7 +1,7 @@
-var keyMirror = require("key_mirror");
+var enums = require("enums");
 
 
-module.exports = keyMirror([
+module.exports = enums([
     "FROM",
 
     "SELECT",
@@ -13,6 +13,12 @@ module.exports = keyMirror([
 
     "SKIP",
     "LIMIT",
+
+    "ORDER_BY",
+    "ORDER",
+
+    "ASC",
+    "DESC",
 
     "INNER_JOIN",
     "LEFT_JOIN",

@@ -15,6 +15,9 @@ var arrayMap = require("array-map"),
     skip = require("./skip"),
     limit = require("./limit"),
 
+    order = require("./order"),
+    orderBy = require("./orderBy"),
+
     innerJoin = require("./innerJoin"),
     leftJoin = require("./leftJoin"),
     rightJoin = require("./rightJoin");
@@ -68,6 +71,11 @@ function compileStatement(tables, fromTable, relation) {
             return createSkip(notation);
         case consts.LIMIT:
             return createLimit(notation);
+
+        case consts.ORDER:
+            return createOrder(notation);
+        case consts.ORDER_BY:
+            return createOrderBy(notation);
 
         case consts.INNER_JOIN:
             return createInnerJoin(tables, notation.relation.notation, notation.on);
@@ -193,6 +201,22 @@ function createLimit(count) {
 
     return function limit(results) {
         return localLimit(results, count);
+    };
+}
+
+function createOrder(by) {
+    var localOrder = order;
+
+    return function order(results) {
+        return localOrder(results, by);
+    };
+}
+
+function createOrderBy(by) {
+    var localOrderBy = orderBy;
+
+    return function orderBy(results) {
+        return localOrderBy(results, by);
     };
 }
 

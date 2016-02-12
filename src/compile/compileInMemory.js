@@ -8,7 +8,10 @@ var consts = require("../consts"),
     remove = require("./remove"),
 
     skip = require("./skip"),
-    limit = require("./limit");
+    limit = require("./limit"),
+
+    order = require("./order"),
+    orderBy = require("./orderBy");
 
 
 module.exports = compileInMemory;
@@ -58,6 +61,11 @@ function compileStatement(relation) {
             return createSkip(notation);
         case consts.LIMIT:
             return createLimit(notation);
+
+        case consts.ORDER:
+            return createOrder(notation);
+        case consts.ORDER_BY:
+            return createOrderBy(notation);
 
         default:
             throw new Error("Invalid in memory Relation operation " + relation.operation);
@@ -123,5 +131,21 @@ function createLimit(count) {
 
     return function limit(results) {
         return localLimit(results, count);
+    };
+}
+
+function createOrder(by) {
+    var localOrder = order;
+
+    return function order(results) {
+        return localOrder(results, by);
+    };
+}
+
+function createOrderBy(by) {
+    var localOrderBy = orderBy;
+
+    return function orderBy(results) {
+        return localOrderBy(results, by);
     };
 }

@@ -31,6 +31,8 @@
   "dependencies": {
     "array-filter": "git://github.com/nathanfaucett/array-filter.git",
     "array-map": "git://github.com/nathanfaucett/array-map.git",
+    "array-reverse": "git://github.com/nathanfaucett/array-reverse.git",
+    "enums": "git://github.com/nathanfaucett/enums.git",
     "has": "git://github.com/nathanfaucett/has.git",
     "index_of": "git://github.com/nathanfaucett/index_of.git",
     "is_array": "git://github.com/nathanfaucett/is_array.git",

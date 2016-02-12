@@ -52,7 +52,7 @@ MemoryAdapterPrototype.createRow = function(tableName, values) {
     return this;
 };
 
-MemoryAdapterPrototype.compile = function(from, relations) {
+MemoryAdapterPrototype.compile = function(from, relation, relations) {
     var tables = this.__tables;
     return compile(tables, from, tables[from.tableName], relations);
 };

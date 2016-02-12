@@ -77,7 +77,6 @@ organizationMembershipsAdapter
     });
 
 tape("select(where: Array<Array[attribute: String, comparision: String, value: Any]>)", function(assert) {
-
     users(usersAdapter)
         .select([
             [users.attributes.id, ">", 2],
@@ -97,7 +96,6 @@ tape("select(where: Array<Array[attribute: String, comparision: String, value: A
 });
 
 tape("project(what: Array<String>)", function(assert) {
-
     users(usersAdapter)
         .project([users.attributes.id])
         .run(function onRun(error, results) {
@@ -117,7 +115,6 @@ tape("project(what: Array<String>)", function(assert) {
 });
 
 tape("insert(attributes: Array<String>, values: Array<Array<Any>>)", function(assert) {
-
     users(usersAdapter)
         .insert([users.attributes.id, users.attributes.email], [
             [4, "new@new.com"]
@@ -136,7 +133,6 @@ tape("insert(attributes: Array<String>, values: Array<Array<Any>>)", function(as
 });
 
 tape("remove(where: Array<Array[attribute: String, comparision: String, value: Any]>)", function(assert) {
-
     users(usersAdapter)
         .remove([
             [users.attributes.id, "=", 4]
@@ -155,7 +151,6 @@ tape("remove(where: Array<Array[attribute: String, comparision: String, value: A
 });
 
 tape("update(attributes: Array<String>, values: Array<Any>, where: Array<Array[attribute: String, comparision: String, value: Any]>)", function(assert) {
-
     users(usersAdapter)
         .update(
             [users.attributes.email], ["new@new.com"], [
@@ -170,6 +165,23 @@ tape("update(attributes: Array<String>, values: Array<Any>, where: Array<Array[a
                     "users.id": 1,
                     "users.email": "new@new.com"
                 }], "should update rows with attrubtes and corresponding values where statements are true, and return updated rows");
+                assert.end();
+            }
+        });
+});
+
+tape("limit(count: Number)", function(assert) {
+    users(usersAdapter)
+        .select()
+        .limit(1)
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    "users.id": 1,
+                    "users.email": "new@new.com"
+                }]);
                 assert.end();
             }
         });
@@ -209,8 +221,53 @@ tape("limit(count: Number)", function(assert) {
         });
 });
 
-tape("join(relation: Relation, on: Array<Array[attribute: String, comparision: String, value: Any]>[, type: String]) where type is INNER_JOIN (default)", function(assert) {
+tape("order(by: rel.consts.ASC or rel.consts.DESC)", function(assert) {
+    users(usersAdapter)
+        .select()
+        .order(rel.consts.DESC)
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    'users.email': 'bill@bill.com',
+                    'users.id': 3
+                }, {
+                    'users.email': 'frank@frank.com',
+                    'users.id': 2
+                }, {
+                    'users.email': 'new@new.com',
+                    'users.id': 1
+                }]);
+                assert.end();
+            }
+        });
+});
 
+tape("orderBy(by: Array<String>)", function(assert) {
+    users(usersAdapter)
+        .select()
+        .orderBy([users.attributes.id])
+        .run(function onRun(error, results) {
+            if (error) {
+                assert.end(error);
+            } else {
+                assert.deepEqual(results, [{
+                    'users.email': 'new@new.com',
+                    'users.id': 1
+                }, {
+                    'users.email': 'frank@frank.com',
+                    'users.id': 2
+                }, {
+                    'users.email': 'bill@bill.com',
+                    'users.id': 3
+                }]);
+                assert.end();
+            }
+        });
+});
+
+tape("join(relation: Relation, on: Array<Array[attribute: String, comparision: String, value: Any]>[, type: String]) where type is INNER_JOIN (default)", function(assert) {
     users(usersAdapter)
         .select([
             [users.attributes.id, "=", 1]

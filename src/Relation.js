@@ -10,9 +10,9 @@ var isNull = require("is_null"),
 var RelationPrototype,
 
     JOINS = keyMirror([
-        consts.INNER_JOIN,
-        consts.LEFT_JOIN,
-        consts.RIGHT_JOIN
+        "INNER_JOIN",
+        "LEFT_JOIN",
+        "RIGHT_JOIN"
     ]);
 
 
@@ -85,6 +85,14 @@ RelationPrototype.limit = function(count) {
     return new Relation(this, consts.LIMIT, count, this.table, this.adapter, false);
 };
 
+RelationPrototype.order = function(by) {
+    return new Relation(this, consts.ORDER, by, this.table, this.adapter, false);
+};
+
+RelationPrototype.orderBy = function(by) {
+    return new Relation(this, consts.ORDER_BY, by, this.table, this.adapter, false);
+};
+
 RelationPrototype.run = function(callback) {
     return this.compile()(callback);
 };
@@ -95,18 +103,24 @@ RelationPrototype.compile = function() {
     if (this.__isCompiled) {
         return this.__run;
     } else {
-        run = compileRelation(this, []);
+        run = compileRelation(this, this, []);
         this.__isCompiled = true;
         this.__run = run;
         return run;
     }
 };
 
-function compileRelation(relation, stack) {
+function compileRelation(lastRelation, relation, stack) {
     var fromRelation = relation.from,
         notation;
 
-    if (!isNull(fromRelation)) {
+    if (isNull(fromRelation)) {
+        if (relation.operation !== consts.FROM) {
+            throw new TypeError("Relation compile() Invalid root relation, must be a from relation");
+        } else {
+            return relation.adapter.compile(relation.notation, lastRelation, stack);
+        }
+    } else {
         notation = relation.notation;
         if (relation.__isJoin && relation.adapter !== notation.relation.adapter) {
             if (stack.length) {
@@ -129,13 +143,7 @@ function compileRelation(relation, stack) {
             }
         } else {
             stack.unshift(relation);
-            return compileRelation(fromRelation, stack);
-        }
-    } else {
-        if (relation.operation !== consts.FROM) {
-            throw new TypeError("Relation compile() Invalid root relation, must be a from relation");
-        } else {
-            return relation.adapter.compile(relation.notation, stack);
+            return compileRelation(lastRelation, fromRelation, stack);
         }
     }
 }
