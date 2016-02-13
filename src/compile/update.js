@@ -6,10 +6,10 @@ var arrayMap = require("array-map"),
 module.exports = update;
 
 
-function update(rows, attributes, values, where) {
+function update(options, rows, attributes, values, where) {
     return arrayMap(rows, function(row) {
-        if (rowEqualWhere(row, where)) {
-            return updateRow(row, attributes, values);
+        if (rowEqualWhere(options, row, where)) {
+            return updateRow(options, row, attributes, values);
         } else {
             return row;
         }

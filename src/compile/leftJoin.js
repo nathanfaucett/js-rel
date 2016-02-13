@@ -6,7 +6,7 @@ var joinRow = require("./joinRow"),
 module.exports = leftJoin;
 
 
-function leftJoin(a, b, on) {
+function leftJoin(options, a, b, on) {
     var results = [],
         i = -1,
         il = a.length - 1,
@@ -23,7 +23,7 @@ function leftJoin(a, b, on) {
         while (j++ < jl) {
             rowB = b[j];
 
-            if (rowsEqualWhere(rowA, rowB, on)) {
+            if (rowsEqualWhere(options, rowA, rowB, on)) {
                 results[results.length] = joinRow(rowA, rowB);
                 found = true;
             }

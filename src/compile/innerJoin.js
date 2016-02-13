@@ -5,7 +5,7 @@ var joinRow = require("./joinRow"),
 module.exports = innerJoin;
 
 
-function innerJoin(a, b, on) {
+function innerJoin(options, a, b, on) {
     var results = [],
         i = -1,
         il = a.length - 1,
@@ -20,7 +20,7 @@ function innerJoin(a, b, on) {
         while (j++ < jl) {
             rowB = b[j];
 
-            if (rowsEqualWhere(rowA, rowB, on)) {
+            if (rowsEqualWhere(options, rowA, rowB, on)) {
                 results[results.length] = joinRow(rowA, rowB);
             }
         }

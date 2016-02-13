@@ -2,7 +2,9 @@ var has = require("has"),
     indexOf = require("index_of"),
     isString = require("is_string"),
     consts = require("./consts"),
-    Relation = require("./Relation");
+    Relation = require("./Relation"),
+    Attribute = require("./Table/Attribute"),
+    Type = require("./Table/Type");
 
 
 var TYPES = [
@@ -26,7 +28,6 @@ function createTable(tableName, columns) {
     }
 
     table.tableName = tableName;
-
     table.types = {};
     table.attributes = {};
 
@@ -45,18 +46,27 @@ function parseAttributes(table, columns) {
     for (columnName in columns) {
         if (localHas(columns, columnName)) {
             fullColumnName = tableName + "." + columnName;
-            attributes[columnName] = fullColumnName;
-            types[fullColumnName] = parseColumnType(columns[columnName]);
+            attributes[columnName] = new Attribute(fullColumnName);
+            types[fullColumnName] = parseColumn(columns[columnName]);
         }
     }
 }
 
-function parseColumnType(type) {
-    var lowerCaseType = type.toLowerCase();
+function parseColumn(column) {
+    var lowerCaseType;
+
+    if (isString(column)) {
+        column = {
+            type: column
+        }
+    }
+    lowerCaseType = (column.type || "").toLowerCase();
 
     if (indexOf(TYPES, lowerCaseType) === -1) {
-        throw new TypeError("Table(tableName, column) unsupported type " + type);
+        throw new TypeError("createTable(tableName, columns) unsupported type " + column.type);
     } else {
-        return lowerCaseType;
+        column.type = lowerCaseType;
     }
+
+    return new Type(column);
 }

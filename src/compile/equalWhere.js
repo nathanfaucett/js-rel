@@ -1,23 +1,26 @@
+var parseValue = require("./parseValue");
+
+
 module.exports = equalWhere;
 
 
-function equalWhere(a, b, comparision) {
+function equalWhere(options, a, b, comparision) {
     switch (comparision) {
         case ">":
-            return a > b;
+            return parseValue(options, a) > parseValue(options, b);
         case "<":
-            return a < b;
+            return parseValue(options, a) < parseValue(options, b);
         case ">=":
-            return a >= b;
+            return parseValue(options, a) >= parseValue(options, b);
         case "<=":
-            return a <= b;
+            return parseValue(options, a) <= parseValue(options, b);
         case ">=":
-            return a >= b;
+            return parseValue(options, a) >= parseValue(options, b);
         case "<=":
-            return a <= b;
+            return parseValue(options, a) <= parseValue(options, b);
         case "!=":
-            return a !== b;
+            return parseValue(options, a) !== parseValue(options, b);
         default:
-            return a === b;
+            return parseValue(options, a) === parseValue(options, b);
     }
 }

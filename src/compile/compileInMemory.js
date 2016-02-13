@@ -26,12 +26,12 @@ function compileInMemory(relations) {
         stack[stack.length] = compileStatement(relations[i]);
     }
 
-    return function run(results, callback) {
+    return function run(options, results, callback) {
         var i = -1,
             il = stack.length - 1;
 
         while (i++ < il) {
-            results = stack[i](results);
+            results = stack[i](options, results);
         }
 
         callback(undefined, results);
@@ -73,7 +73,7 @@ function compileStatement(relation) {
 }
 
 function createFrom() {
-    return function fromFunction(results) {
+    return function fromFunction(options, results) {
         return results;
     };
 }
@@ -81,71 +81,71 @@ function createFrom() {
 function createSelect(where) {
     var localSelect = select;
 
-    return function select(results) {
-        return localSelect(results, where);
+    return function select(options, results) {
+        return localSelect(options, results, where);
     };
 }
 
 function createProject(what) {
     var localProject = project;
 
-    return function project(results) {
-        return localProject(results, what);
+    return function project(options, results) {
+        return localProject(options, results, what);
     };
 }
 
 function createInsert(attributes, values) {
     var localInsert = insert;
 
-    return function insert(results) {
-        return localInsert(results, attributes, values);
+    return function insert(options, results) {
+        return localInsert(options, results, attributes, values);
     };
 }
 
 function createUpdate(attributes, values, where) {
     var localUpdate = update;
 
-    return function update(results) {
-        return localUpdate(results, attributes, values, where);
+    return function update(options, results) {
+        return localUpdate(options, results, attributes, values, where);
     };
 }
 
 function createRemove(where) {
     var localRemove = remove;
 
-    return function remove(results) {
-        return localRemove(results, where);
+    return function remove(options, results) {
+        return localRemove(options, results, where);
     };
 }
 
 function createSkip(count) {
     var localSkip = skip;
 
-    return function skip(results) {
-        return localSkip(results, count);
+    return function skip(options, results) {
+        return localSkip(options, results, count);
     };
 }
 
 function createLimit(count) {
     var localLimit = limit;
 
-    return function limit(results) {
-        return localLimit(results, count);
+    return function limit(options, results) {
+        return localLimit(options, results, count);
     };
 }
 
 function createOrder(by) {
     var localOrder = order;
 
-    return function order(results) {
-        return localOrder(results, by);
+    return function order(options, results) {
+        return localOrder(options, results, by);
     };
 }
 
 function createOrderBy(by) {
     var localOrderBy = orderBy;
 
-    return function orderBy(results) {
-        return localOrderBy(results, by);
+    return function orderBy(options, results) {
+        return localOrderBy(options, results, by);
     };
 }

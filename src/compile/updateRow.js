@@ -1,10 +1,11 @@
-var has = require("has");
+var has = require("has"),
+    parseValue = require("./parseValue");
 
 
 module.exports = updateRow;
 
 
-function updateRow(row, attributes, values) {
+function updateRow(options, row, attributes, values) {
     var localHas = has,
         result = {},
         i = -1,
@@ -18,7 +19,7 @@ function updateRow(row, attributes, values) {
     }
 
     while (i++ < il) {
-        result[attributes[i]] = values[i];
+        result[attributes[i]] = parseValue(options, values[i]);
     }
 
     return result;

@@ -1,6 +1,9 @@
+var parseValue = require("./parseValue");
+
+
 module.exports = skip;
 
 
-function skip(rows, count) {
-    return rows.slice(count, rows.length);
+function skip(options, rows, count) {
+    return rows.slice(parseValue(options, count), rows.length);
 }

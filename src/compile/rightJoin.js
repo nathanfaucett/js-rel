@@ -6,7 +6,7 @@ var joinRow = require("./joinRow"),
 module.exports = rightJoin;
 
 
-function rightJoin(a, b, on) {
+function rightJoin(options, a, b, on) {
     var results = [],
         i = -1,
         il = b.length - 1,
@@ -23,7 +23,7 @@ function rightJoin(a, b, on) {
         while (j++ < jl) {
             rowA = a[j];
 
-            if (rowsEqualWhere(rowA, rowB, on)) {
+            if (rowsEqualWhere(options, rowA, rowB, on)) {
                 results[results.length] = joinRow(rowA, rowB);
                 found = true;
             }

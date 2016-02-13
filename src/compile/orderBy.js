@@ -1,24 +1,27 @@
+var parseValue = require("./parseValue");
+
+
 module.exports = orderBy;
 
 
-function orderBy(rows, by) {
+function orderBy(options, rows, by) {
     var newRows = rows.slice();
 
     newRows.sort(function onSort(a, b) {
-        return compare(a, b, by);
+        return compare(options, a, b, by);
     });
 
     return newRows;
 }
 
-function compare(a, b, by) {
+function compare(options, a, b, by) {
     var ret = 0,
         i = -1,
         il = by.length - 1,
         attribute, aValue, bValue;
 
     while (i++ < il) {
-        attribute = by[i];
+        attribute = parseValue(options, by[i]);
         aValue = a[attribute];
         bValue = b[attribute];
 

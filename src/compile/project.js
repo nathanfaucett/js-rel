@@ -6,7 +6,7 @@ var arrayMap = require("array-map"),
 module.exports = project;
 
 
-function project(rows, attributes) {
+function project(options, rows, attributes) {
     return isArray(attributes) ?
         arrayMap(rows, function mapSelect(row) {
             var localHas = has,

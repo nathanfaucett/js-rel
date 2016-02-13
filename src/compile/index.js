@@ -35,16 +35,16 @@ function compile(tables, fromTable, results, relations) {
         stack[stack.length] = compileStatement(tables, fromTable, relations[i]);
     }
 
-    return function run(callback) {
+    return function run(options, callback) {
         var i = -1,
             il = stack.length - 1,
             localResults = results;
 
         while (i++ < il) {
-            localResults = stack[i](localResults);
+            localResults = stack[i](options, localResults);
         }
 
-        process.nextTick(function() {
+        process.nextTick(function onNextTick() {
             callback(undefined, localResults);
         });
     };
@@ -90,7 +90,7 @@ function compileStatement(tables, fromTable, relation) {
 }
 
 function createFrom() {
-    return function fromTable(results) {
+    return function fromTable(options, results) {
         return results;
     };
 }
@@ -98,16 +98,16 @@ function createFrom() {
 function createSelect(where) {
     var localSelect = select;
 
-    return function select(results) {
-        return localSelect(results, where);
+    return function select(options, results) {
+        return localSelect(options, results, where);
     };
 }
 
 function createProject(what) {
     var localProject = project;
 
-    return function project(results) {
-        return localProject(results, what);
+    return function project(options, results) {
+        return localProject(options, results, what);
     };
 }
 
@@ -115,8 +115,8 @@ function createInsert(tables, fromTable, attributes, values) {
     var localInsert = insert,
         tableName = fromTable.tableName;
 
-    return function insert(results) {
-        var newRows = localInsert([], attributes, values);
+    return function insert(options, results) {
+        var newRows = localInsert(options, [], attributes, values);
 
         if (results === tables[tableName]) {
             tables[tableName] = mergeArray(results, newRows);
@@ -129,7 +129,7 @@ function createInsert(tables, fromTable, attributes, values) {
 function createUpdate(tables, fromTable, attributes, values, where) {
     var tableName = fromTable.tableName;
 
-    return function update(results) {
+    return function update(options, results) {
         var updatedRows;
 
         if (results === tables[tableName]) {
@@ -138,8 +138,8 @@ function createUpdate(tables, fromTable, attributes, values, where) {
             tables[tableName] = arrayMap(results, function mapUpdateRow(row) {
                 var updatedRow;
 
-                if (rowEqualWhere(row, where)) {
-                    updatedRow = updateRow(row, attributes, values);
+                if (rowEqualWhere(options, row, where)) {
+                    updatedRow = updateRow(options, row, attributes, values);
                     updatedRows[updatedRows.length] = updatedRow;
                     return updatedRow;
                 } else {
@@ -151,10 +151,10 @@ function createUpdate(tables, fromTable, attributes, values, where) {
         } else {
             return arrayMap(
                 arrayFilter(results, function filterWhere(row) {
-                    return rowEqualWhere(row, where);
+                    return rowEqualWhere(options, row, where);
                 }),
                 function updateRow(row) {
-                    return updateRow(row, attributes, values);
+                    return updateRow(options, row, attributes, values);
                 }
             );
         }
@@ -164,14 +164,14 @@ function createUpdate(tables, fromTable, attributes, values, where) {
 function createRemove(tables, fromTable, where) {
     var tableName = fromTable.tableName;
 
-    return function remove(results) {
+    return function remove(options, results) {
         var removedRows;
 
         if (results === tables[tableName]) {
             removedRows = [];
 
             tables[tableName] = arrayFilter(results, function filterRemoveRow(row) {
-                if (rowEqualWhere(row, where)) {
+                if (rowEqualWhere(options, row, where)) {
                     removedRows[removedRows.length] = row;
                     return false;
                 } else {
@@ -182,7 +182,7 @@ function createRemove(tables, fromTable, where) {
             return removedRows;
         } else {
             return arrayFilter(results, function filterWhere(row) {
-                return rowEqualWhere(row, where);
+                return rowEqualWhere(options, row, where);
             });
         }
     };
@@ -191,55 +191,55 @@ function createRemove(tables, fromTable, where) {
 function createSkip(count) {
     var localSkip = skip;
 
-    return function skip(results) {
-        return localSkip(results, count);
+    return function skip(options, results) {
+        return localSkip(options, results, count);
     };
 }
 
 function createLimit(count) {
     var localLimit = limit;
 
-    return function limit(results) {
-        return localLimit(results, count);
+    return function limit(options, results) {
+        return localLimit(options, results, count);
     };
 }
 
 function createOrder(by) {
     var localOrder = order;
 
-    return function order(results) {
-        return localOrder(results, by);
+    return function order(options, results) {
+        return localOrder(options, results, by);
     };
 }
 
 function createOrderBy(by) {
     var localOrderBy = orderBy;
 
-    return function orderBy(results) {
-        return localOrderBy(results, by);
+    return function orderBy(options, results) {
+        return localOrderBy(options, results, by);
     };
 }
 
 function createInnerJoin(tables, fromTable, on) {
     var localInnerJoin = innerJoin;
 
-    return function innerJoin(results) {
-        return localInnerJoin(results, tables[fromTable], on);
+    return function innerJoin(options, results) {
+        return localInnerJoin(options, results, tables[fromTable], on);
     };
 }
 
 function createLeftJoin(tables, fromTable, on) {
     var localLeftJoin = leftJoin;
 
-    return function leftJoin(results) {
-        return localLeftJoin(results, tables[fromTable], on);
+    return function leftJoin(options, results) {
+        return localLeftJoin(options, results, tables[fromTable], on);
     };
 }
 
 function createRightJoin(tables, fromTable, on) {
     var localRightJoin = rightJoin;
 
-    return function rightJoin(results) {
-        return localRightJoin(results, tables[fromTable], on);
+    return function rightJoin(options, results) {
+        return localRightJoin(options, results, tables[fromTable], on);
     };
 }

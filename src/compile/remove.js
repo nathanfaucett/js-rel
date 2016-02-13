@@ -6,7 +6,7 @@ var arrayFilter = require("array-filter"),
 module.exports = remove;
 
 
-function remove(rows, where) {
+function remove(options, rows, where) {
     return isArray(where) ?
         arrayFilter(rows, function fitlerWhere(row) {
             var i = -1,
@@ -16,7 +16,7 @@ function remove(rows, where) {
             while (i++ < il) {
                 statement = where[i];
 
-                if (!equalWhere(row[statement[0]], statement[2], statement[1])) {
+                if (!equalWhere(options, row[statement[0]], statement[2], statement[1])) {
                     return true;
                 }
             }

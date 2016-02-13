@@ -36,6 +36,7 @@
     "has": "git://github.com/nathanfaucett/has.git",
     "index_of": "git://github.com/nathanfaucett/index_of.git",
     "is_array": "git://github.com/nathanfaucett/is_array.git",
+    "is_function": "git://github.com/nathanfaucett/is_function.git",
     "is_null": "git://github.com/nathanfaucett/is_null.git",
     "is_string": "git://github.com/nathanfaucett/is_string.git",
     "key_mirror": "git://github.com/nathanfaucett/key_mirror.git"
