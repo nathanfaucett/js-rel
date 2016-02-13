@@ -1,5 +1,6 @@
 var arrayFilter = require("array-filter"),
     isArray = require("is_array"),
+    parseOption = require("./parseOption"),
     equalWhere = require("./equalWhere");
 
 
@@ -16,7 +17,7 @@ function select(options, rows, where) {
             while (i++ < il) {
                 statement = where[i];
 
-                if (!equalWhere(options, row[statement[0]], statement[2], statement[1])) {
+                if (!equalWhere(options, row[parseOption(options, statement[0])], parseOption(options, statement[2]), parseOption(options, statement[1]))) {
                     return false;
                 }
             }

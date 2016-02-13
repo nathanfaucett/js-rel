@@ -4,10 +4,10 @@ var Arg = require("../Relation/Arg");
 var isArg = Arg.isArg;
 
 
-module.exports = parseValue;
+module.exports = parseOption;
 
 
-function parseValue(options, value) {
+function parseOption(options, value) {
     if (isArg(value)) {
         return value.parse(options);
     } else {

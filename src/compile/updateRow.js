@@ -1,5 +1,5 @@
 var has = require("has"),
-    parseValue = require("./parseValue");
+    parseOption = require("./parseOption");
 
 
 module.exports = updateRow;
@@ -19,7 +19,7 @@ function updateRow(options, row, attributes, values) {
     }
 
     while (i++ < il) {
-        result[attributes[i]] = parseValue(options, values[i]);
+        result[parseOption(options, attributes[i])] = parseOption(options, values[i]);
     }
 
     return result;

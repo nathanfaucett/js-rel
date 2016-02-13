@@ -1,4 +1,5 @@
-var equalWhere = require("./equalWhere");
+var equalWhere = require("./equalWhere"),
+    parseOption = require("./parseOption");
 
 
 module.exports = rowsEqualWhere;
@@ -12,7 +13,7 @@ function rowsEqualWhere(options, a, b, where) {
     while (i++ < il) {
         statement = where[i];
 
-        if (!equalWhere(options, a[statement[0]], b[statement[2]], statement[1])) {
+        if (!equalWhere(options, a[parseOption(options, statement[0])], b[parseOption(options, statement[2])], parseOption(options, statement[1]))) {
             return false;
         }
     }

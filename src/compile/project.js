@@ -1,6 +1,7 @@
 var arrayMap = require("array-map"),
     has = require("has"),
-    isArray = require("is_array");
+    isArray = require("is_array"),
+    parseOption = require("./parseOption");
 
 
 module.exports = project;
@@ -16,7 +17,7 @@ function project(options, rows, attributes) {
                 key;
 
             while (i++ < il) {
-                key = attributes[i];
+                key = parseOption(options, attributes[i]);
 
                 if (localHas(row, key)) {
                     out[key] = row[key];
@@ -25,17 +26,5 @@ function project(options, rows, attributes) {
 
             return out;
         }) :
-        arrayMap(rows, function mapSelect(row) {
-            var localHas = has,
-                out = {},
-                key;
-
-            for (key in row) {
-                if (localHas(row, key)) {
-                    out[key] = row[key];
-                }
-            }
-
-            return out;
-        });
+        rows;
 }

@@ -1,4 +1,4 @@
-var parseValue = require("./parseValue");
+var parseOption = require("./parseOption");
 
 
 module.exports = createRow;
@@ -10,7 +10,7 @@ function createRow(options, attributes, values) {
         il = attributes.length - 1;
 
     while (i++ < il) {
-        result[attributes[i]] = parseValue(options, values[i]);
+        result[parseOption(options, attributes[i])] = parseOption(options, values[i]);
     }
 
     return result;

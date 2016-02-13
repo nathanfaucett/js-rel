@@ -1,5 +1,5 @@
 var arrayReverse = require("array-reverse"),
-    parseValue = require("./parseValue"),
+    parseOption = require("./parseOption"),
     consts = require("../consts");
 
 
@@ -10,7 +10,7 @@ module.exports = order;
 
 
 function order(options, rows, by) {
-    if (parseValue(options, by) === DESC) {
+    if (parseOption(options, by) === DESC) {
         return arrayReverse(rows);
     } else {
         return rows;

@@ -1,4 +1,4 @@
-var parseValue = require("./parseValue");
+var parseOption = require("./parseOption");
 
 
 module.exports = orderBy;
@@ -21,7 +21,7 @@ function compare(options, a, b, by) {
         attribute, aValue, bValue;
 
     while (i++ < il) {
-        attribute = parseValue(options, by[i]);
+        attribute = parseOption(options, by[i]);
         aValue = a[attribute];
         bValue = b[attribute];
 
