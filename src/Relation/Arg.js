@@ -17,7 +17,7 @@ ArgPrototype.__isArg__ = true;
 
 Arg.isArg = function(value) {
     return value && value.__isArg__;
-}
+};
 
 Arg.create = function(name) {
     if (!isString(name)) {

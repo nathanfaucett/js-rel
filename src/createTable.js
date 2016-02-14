@@ -58,7 +58,7 @@ function parseColumn(column) {
     if (isString(column)) {
         column = {
             type: column
-        }
+        };
     }
     lowerCaseType = (column.type || "").toLowerCase();
 
