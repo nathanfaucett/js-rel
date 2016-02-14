@@ -11,7 +11,7 @@ AttributePrototype = Attribute.prototype;
 
 AttributePrototype.__isAttribute__ = true;
 
-Attribute.isType = function(value) {
+Attribute.isAttribute = function(value) {
     return value && value.__isAttribute__;
 };
 

@@ -7,7 +7,6 @@ tape("orderBy(by: Array<String>)", function(assert) {
     var users = table.users;
 
     users(adapter.users)
-        .select()
         .orderBy([users.attributes.id])
         .run(function onRun(error, results) {
             if (error) {

@@ -8,7 +8,6 @@ tape("order(by: rel.consts.ASC or rel.consts.DESC)", function(assert) {
     var users = table.users;
 
     users(adapter.users)
-        .select()
         .order(rel.consts.DESC)
         .run(function onRun(error, results) {
             if (error) {

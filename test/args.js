@@ -9,12 +9,12 @@ tape("variable args", function(assert) {
 
     users(adapter.users)
         .select([
-            [users.attributes.id, ">", rel.arg("id")],
-            [users.attributes.email, "=", rel.arg("email")]
+            [rel.arg("attribute"), rel.arg("comparator"), rel.arg("value")]
         ])
         .run({
-            id: 2,
-            email: "bill@bill.com"
+            attribute: users.attributes.id,
+            comparator: "=",
+            value: 3
         }, function onRun(error, results) {
             if (error) {
                 assert.end(error);

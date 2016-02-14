@@ -7,7 +7,6 @@ tape("limit(count: Number)", function(assert) {
     var users = table.users;
 
     users(adapter.users)
-        .select()
         .limit(1)
         .run(function onRun(error, results) {
             if (error) {
