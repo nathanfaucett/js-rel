@@ -1,4 +1,4 @@
-rel
+rel [![Build Status](https://travis-ci.org/nathanfaucett/rel.svg?branch=master)](https://travis-ci.org/nathanfaucett/rel)
 =======
 
 relational algebra for the browser and node.js
